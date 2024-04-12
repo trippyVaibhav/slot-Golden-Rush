@@ -372,21 +372,18 @@ public class SlotBehaviour : MonoBehaviour
                 {
                     animScript.textureArray.Add(Ten_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 30f;
                 break;
             case 1:
                 for (int i = 0; i < A_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(A_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 30f;
                 break;
             case 2:
                 for (int i = 0; i < Gold_Sprite.Length; i++)
                 {
                     animScript.textureArray.Add(Gold_Sprite[i]);
                 }
-                animScript.AnimationSpeed = 30f;
                 break;
             case 3:
                 for (int i = 0; i < J_Sprite.Length; i++)
