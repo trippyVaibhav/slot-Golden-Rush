@@ -39,6 +39,19 @@ public class SlotBehaviour : MonoBehaviour
     [Header("Buttons")]
     [SerializeField]
     private Button SlotStart_Button;
+    [SerializeField]
+    private Button AutoSpin_Button;
+    [SerializeField]
+    private Button MaxBet_Button;
+    [SerializeField]
+    private Button BetPlus_Button;
+    [SerializeField]
+    private Button BetMinus_Button;
+    [SerializeField]
+    private Button LinePlus_Button;
+    [SerializeField]
+    private Button LineMinus_Button;
+    [SerializeField] private Button AutoSpinStop_Button;
 
     [Header("Animated Sprites")]
     [SerializeField]
@@ -73,35 +86,12 @@ public class SlotBehaviour : MonoBehaviour
     private TMP_Text Lines_text;
     [SerializeField]
     private TMP_Text TotalWin_text;
-    [SerializeField]
-    private Button AutoSpin_Button;
-    [SerializeField]
-    private Sprite AutoSpinHover_Sprite;
-    [SerializeField]
-    private Sprite AutoSpin_Sprite;
-    [SerializeField]
-    private Image AutoSpin_Image;
-    [SerializeField]
-    private Button MaxBet_Button;
-    [SerializeField]
-    private Button BetPlus_Button;
-    [SerializeField]
-    private Button BetMinus_Button;
-    [SerializeField]
-    private Button LinePlus_Button;
-    [SerializeField]
-    private Button LineMinus_Button;
+
+
 
     [Header("Audio Management")]
     [SerializeField] private AudioController audioController;
-    [SerializeField]
-    private AudioSource _audioSource;
-    [SerializeField]
-    private AudioClip _spinSound;
-    [SerializeField]
-    private AudioClip _lossSound;
-    [SerializeField]
-    private AudioClip[] _winSounds;
+
 
     int tweenHeight = 0;  //calculate the height at which tweening is done
 
@@ -127,8 +117,12 @@ public class SlotBehaviour : MonoBehaviour
 
     [SerializeField]
     private SocketIOManager SocketManager;
+
     Coroutine AutoSpinRoutine = null;
+    Coroutine tweenroutine=null;
     bool IsAutoSpin = false;
+
+    bool IsSpinning = false;
 
     private void Start()
     {
@@ -151,38 +145,65 @@ public class SlotBehaviour : MonoBehaviour
 
         if (AutoSpin_Button) AutoSpin_Button.onClick.RemoveAllListeners();
         if (AutoSpin_Button) AutoSpin_Button.onClick.AddListener(AutoSpin);
+
+        if (AutoSpinStop_Button) AutoSpinStop_Button.onClick.RemoveAllListeners();
+        if (AutoSpinStop_Button) AutoSpinStop_Button.onClick.AddListener(StopAutoSpin);
     }
 
     private void AutoSpin()
     {
-        IsAutoSpin = !IsAutoSpin;
-        if(IsAutoSpin)
+        if (!IsAutoSpin)
         {
-            if (AutoSpin_Image) AutoSpin_Image.sprite = AutoSpinHover_Sprite;
-            if(AutoSpinRoutine != null)
-            {
-                StopCoroutine(AutoSpinRoutine);
-                AutoSpinRoutine = null;
-            }
-            AutoSpinRoutine = StartCoroutine(AutoSpinCoroutine());
-        }
-        else
-        {
-            if (AutoSpin_Image) AutoSpin_Image.sprite = AutoSpin_Sprite;
+
+            IsAutoSpin = true;
+            if (AutoSpinStop_Button) AutoSpinStop_Button.gameObject.SetActive(true);
+            if (AutoSpin_Button) AutoSpin_Button.gameObject.SetActive(false);
+
             if (AutoSpinRoutine != null)
             {
                 StopCoroutine(AutoSpinRoutine);
                 AutoSpinRoutine = null;
+                StopCoroutine(tweenroutine);
+                tweenroutine = null;
             }
+            AutoSpinRoutine = StartCoroutine(AutoSpinCoroutine());
+
         }
+    }
+
+    private void StopAutoSpin()
+    {
+        if (IsAutoSpin)
+        {
+            IsAutoSpin = false;
+            if (AutoSpinStop_Button) AutoSpinStop_Button.gameObject.SetActive(false);
+            if (AutoSpin_Button) AutoSpin_Button.gameObject.SetActive(true);
+            StartCoroutine(StopAutoSpinCoroutine());
+        }
+
     }
 
     private IEnumerator AutoSpinCoroutine()
     {
-        while(true)
+        while(IsAutoSpin)
         {
-            StartSlots(true);
-            yield return new WaitForSeconds(10);
+            StartSlots(IsAutoSpin);
+            yield return tweenroutine;
+            //yield return new WaitForSeconds(10);
+        }
+    }
+
+    private IEnumerator StopAutoSpinCoroutine()
+    {
+        yield return new WaitUntil(() => !IsSpinning);
+        ToggleButtonGrp(true);
+        if (AutoSpinRoutine != null || tweenroutine != null)
+        {
+            StopCoroutine(AutoSpinRoutine);
+            StopCoroutine(tweenroutine);
+            tweenroutine = null;
+            AutoSpinRoutine = null;
+            StopCoroutine(StopAutoSpinCoroutine());
         }
     }
 
@@ -450,7 +471,7 @@ public class SlotBehaviour : MonoBehaviour
 
         if (!autoSpin)
         {
-            if (AutoSpin_Image) AutoSpin_Image.sprite = AutoSpin_Sprite;
+            //if (AutoSpin_Image) AutoSpin_Image.sprite = AutoSpin_Sprite;
             if (AutoSpinRoutine != null)
             {
                 StopCoroutine(AutoSpinRoutine);
@@ -464,7 +485,7 @@ public class SlotBehaviour : MonoBehaviour
             StopGameAnimation();
         }
         PayCalculator.ResetLines();
-        StartCoroutine(TweenRoutine());
+        tweenroutine=StartCoroutine(TweenRoutine());
         for (int i = 0; i < Tempimages.Count; i++)
         {
             Tempimages[i].slotImages.Clear();
@@ -475,6 +496,8 @@ public class SlotBehaviour : MonoBehaviour
     //manage the Routine for spinning of the slots
     private IEnumerator TweenRoutine()
     {
+        IsSpinning = true;
+        ToggleButtonGrp(false);
         for (int i = 0; i < numberOfSlots; i++)
         {
             InitializeTweening(Slot_Transform[i]);
@@ -494,9 +517,33 @@ public class SlotBehaviour : MonoBehaviour
         GenerateMatrix(SocketManager.tempresult.StopList);
         CheckPayoutLineBackend(SocketManager.tempresult.resultLine, SocketManager.tempresult.x_animResult, SocketManager.tempresult.y_animResult);
         KillAllTweens();
-        if (SlotStart_Button) SlotStart_Button.interactable = true;
+        if (!IsAutoSpin)
+        {
+            ToggleButtonGrp(true);
+            IsSpinning = false;
+
+        }
+        else
+        {
+
+
+            IsSpinning = false;
+            yield return new WaitForSeconds(5f);
+        }
     }
 
+    void ToggleButtonGrp(bool toggle)
+    {
+
+        if (SlotStart_Button) SlotStart_Button.interactable = toggle;
+        if (BetPlus_Button) BetPlus_Button.interactable = toggle;
+        if (BetMinus_Button) BetMinus_Button.interactable = toggle;
+        if (MaxBet_Button) MaxBet_Button.interactable = toggle;
+        if (AutoSpin_Button) AutoSpin_Button.interactable = toggle;
+        if (LineMinus_Button) LineMinus_Button.interactable = toggle;
+        if (LinePlus_Button) LinePlus_Button.interactable = toggle;
+
+    }
     //start the icons animation
     private void StartGameAnimation(GameObject animObjects)
     {
