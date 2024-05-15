@@ -55,27 +55,27 @@ public class SlotBehaviour : MonoBehaviour
 
     [Header("Animated Sprites")]
     [SerializeField]
-    private Sprite[] Ten_Sprite;
-    [SerializeField]
-    private Sprite[] A_Sprite;
-    [SerializeField]
-    private Sprite[] Gold_Sprite;
-    [SerializeField]
-    private Sprite[] J_Sprite;
-    [SerializeField]
-    private Sprite[] K_Sprite;
+    private Sprite[] PickAxe_Sprite;
     [SerializeField]
     private Sprite[] Lantern_Sprite;
     [SerializeField]
+    private Sprite[] Gold_Sprite;
+    [SerializeField]
     private Sprite[] MineCart_Sprite;
     [SerializeField]
-    private Sprite[] PickAxe_Sprite;
+    private Sprite[] Ten_Sprite;
+    [SerializeField]
+    private Sprite[] J_Sprite;
     [SerializeField]
     private Sprite[] Q_Sprite;
     [SerializeField]
-    private Sprite[] Scatter_Sprite;
+    private Sprite[] K_Sprite;
+    [SerializeField]
+    private Sprite[] A_Sprite;
     [SerializeField]
     private Sprite[] Wild_Sprite;
+    [SerializeField]
+    private Sprite[] Scatter_Sprite;
 
     [Header("Miscellaneous UI")]
     [SerializeField]
