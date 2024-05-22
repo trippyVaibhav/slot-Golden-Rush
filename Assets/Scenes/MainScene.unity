@@ -2251,6 +2251,8 @@ MonoBehaviour:
   Settings_Button: {fileID: 836189147}
   Settings_Object: {fileID: 836189145}
   Settings_RT: {fileID: 836189146}
+  Terms_Button: {fileID: 498928661}
+  Privacy_Button: {fileID: 1025018873}
   Exit_Button: {fileID: 1298846852}
   Exit_Object: {fileID: 1298846850}
   Exit_RT: {fileID: 1298846851}
@@ -2260,17 +2262,33 @@ MonoBehaviour:
   MainPopup_Object: {fileID: 1643718612}
   AboutPopup_Object: {fileID: 1334341302}
   AboutExit_Button: {fileID: 1501538279}
+  AboutLogo_Image: {fileID: 2116568934}
+  Support_Button: {fileID: 1495018320}
   PaytablePopup_Object: {fileID: 1023456358}
   PaytableExit_Button: {fileID: 990849630}
+  SymbolsText:
+  - {fileID: 51116641}
+  - {fileID: 1996400378}
+  - {fileID: 1040937784}
+  - {fileID: 2003443652}
+  - {fileID: 1830755231}
+  - {fileID: 766397741}
+  - {fileID: 1726556529}
+  - {fileID: 1488854170}
+  - {fileID: 1236919091}
+  SpecialSymbolsText:
+  - {fileID: 573019167}
+  - {fileID: 1944824739}
   SettingsPopup_Object: {fileID: 103253977}
   SettingsExit_Button: {fileID: 1398599432}
   Sound_Button: {fileID: 377509777}
   Music_Button: {fileID: 32632949}
-  audioController: {fileID: 4870999924229436241}
   MusicOn_Object: {fileID: 1144460043}
   MusicOff_Object: {fileID: 1536590882}
   SoundOn_Object: {fileID: 1531986588}
   SoundOff_Object: {fileID: 881354683}
+  audioController: {fileID: 4870999924229436241}
+  slotManager: {fileID: 2046803210}
 --- !u!1 &385723059
 GameObject:
   m_ObjectHideFlags: 0
@@ -3073,8 +3091,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotManager: {fileID: 2046803210}
-  myJsonFile: {fileID: 4900000, guid: 90908d08c2c7d4bc09e4cb8040e2d6dd, type: 3}
-  ResultJsonFile: {fileID: 4900000, guid: c2929104e256c4777b57cec902093bfd, type: 3}
 --- !u!1 &505613132
 GameObject:
   m_ObjectHideFlags: 0
@@ -8959,8 +8975,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 805853565}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.0019434274}
-  m_AnchorMax: {x: 1, y: 0.20223092}
+  m_AnchorMin: {x: 0, y: 0.79971254}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.5300007, y: 4.5}
   m_SizeDelta: {x: -11.53, y: -21.87}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -11697,6 +11713,7 @@ MonoBehaviour:
   Lines_text: {fileID: 707535442}
   TotalWin_text: {fileID: 576684260}
   audioController: {fileID: 4870999924229436241}
+  uiManager: {fileID: 377874625}
   Image_Prefab: {fileID: 595047196131445314, guid: 04c659a2f5ec249f5be006eb52752781, type: 3}
   PayCalculator: {fileID: 963807277}
   TempList: []
@@ -12069,7 +12086,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1547519658}
   m_HandleRect: {fileID: 1547519657}
   m_Direction: 2
-  m_Value: 0.0024301575
+  m_Value: 1
   m_Size: 0.20028749
   m_NumberOfSteps: 0
   m_OnValueChanged:
