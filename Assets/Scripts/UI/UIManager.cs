@@ -95,35 +95,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject SoundOff_Object;
 
-    //[Header("Win Popup")]
-    //[SerializeField]
-    //private Sprite BigWin_Sprite;
-    //[SerializeField]
-    //private Sprite HugeWin_Sprite;
-    //[SerializeField]
-    //private Sprite MegaWin_Sprite;
-    //[SerializeField]
-    //private Sprite Jackpot_Sprite;
-    //[SerializeField]
-    //private Image Win_Image;
-    //[SerializeField]
-    //private GameObject WinPopup_Object;
-    //[SerializeField]
-    //private TMP_Text Win_Text;
-
-    //[Header("FreeSpins Popup")]
-    //[SerializeField]
-    //private GameObject FreeSpinPopup_Object;
-    //[SerializeField]
-    //private TMP_Text Free_Text;
-    //[SerializeField]
-    //private Button FreeSpin_Button;
-
     [SerializeField]
     private AudioController audioController;
-
-    //[SerializeField]
-    //private Button GameExit_Button;
 
     [SerializeField]
     private SlotBehaviour slotManager;
@@ -167,12 +140,6 @@ public class UIManager : MonoBehaviour
         if (SoundOn_Object) SoundOn_Object.SetActive(true);
         if (SoundOff_Object) SoundOff_Object.SetActive(false);
 
-        //if (GameExit_Button) GameExit_Button.onClick.RemoveAllListeners();
-        //if (GameExit_Button) GameExit_Button.onClick.AddListener(CallOnExitFunction);
-
-        //if (FreeSpin_Button) FreeSpin_Button.onClick.RemoveAllListeners();
-        //if (FreeSpin_Button) FreeSpin_Button.onClick.AddListener(delegate { StartFreeSpins(FreeSpins); });
-
         if (audioController) audioController.ToggleMute(false);
 
         isMusic = true;
@@ -185,61 +152,6 @@ public class UIManager : MonoBehaviour
         if (Music_Button) Music_Button.onClick.AddListener(ToggleMusic);
 
     }
-
-    //internal void PopulateWin(int value, double amount)
-    //{
-    //    switch (value)
-    //    {
-    //        case 1:
-    //            if (Win_Image) Win_Image.sprite = BigWin_Sprite;
-    //            break;
-    //        case 2:
-    //            if (Win_Image) Win_Image.sprite = HugeWin_Sprite;
-    //            break;
-    //        case 3:
-    //            if (Win_Image) Win_Image.sprite = MegaWin_Sprite;
-    //            break;
-    //        case 4:
-    //            if (Win_Image) Win_Image.sprite = Jackpot_Sprite;
-    //            break;
-    //    }
-
-    //    StartPopupAnim(amount);
-    //}
-
-    //private void StartFreeSpins(int spins)
-    //{
-    //    if (MainPopup_Object) MainPopup_Object.SetActive(false);
-    //    if (FreeSpinPopup_Object) FreeSpinPopup_Object.SetActive(false);
-    //    slotManager.FreeSpin(spins);
-    //}
-
-    //internal void FreeSpinProcess(int spins)
-    //{
-    //    FreeSpins = spins;
-    //    if (FreeSpinPopup_Object) FreeSpinPopup_Object.SetActive(true);
-    //    if (Free_Text) Free_Text.text = spins.ToString();
-    //    if (MainPopup_Object) MainPopup_Object.SetActive(true);
-    //}
-
-    //private void StartPopupAnim(double amount)
-    //{
-    //    int initAmount = 0;
-    //    if (WinPopup_Object) WinPopup_Object.SetActive(true);
-    //    if (MainPopup_Object) MainPopup_Object.SetActive(true);
-
-    //    DOTween.To(() => initAmount, (val) => initAmount = val, (int)amount, 5f).OnUpdate(() =>
-    //    {
-    //        if (Win_Text) Win_Text.text = initAmount.ToString();
-    //    });
-
-    //    DOVirtual.DelayedCall(6f, () =>
-    //    {
-    //        if (WinPopup_Object) WinPopup_Object.SetActive(false);
-    //        if (MainPopup_Object) MainPopup_Object.SetActive(false);
-    //       // slotManager.CheckBonusGame();
-    //    });
-    //}
 
     internal void InitialiseUIData(string SupportUrl, string AbtImgUrl, string TermsUrl, string PrivacyUrl, Paylines symbolsText, List<string> Specialsymbols)
     {
