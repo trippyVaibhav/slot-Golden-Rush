@@ -24,7 +24,7 @@ public class SocketIOManager : MonoBehaviour
     WebSocket currentSocket = null;
     internal bool isResultdone = false;
 
-    protected string gameID = "SL-GR";
+    protected string gameID = "SL-VIK";
 
     private void Start()
     {
