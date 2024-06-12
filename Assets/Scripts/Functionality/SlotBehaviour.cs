@@ -85,6 +85,8 @@ public class SlotBehaviour : MonoBehaviour
     private TMP_Text Lines_text;
     [SerializeField]
     private TMP_Text TotalWin_text;
+    [SerializeField]
+    private TMP_Text BetPerLine_text;
 
 
 
@@ -135,9 +137,9 @@ public class SlotBehaviour : MonoBehaviour
         if (SlotStart_Button) SlotStart_Button.onClick.AddListener(delegate { StartSlots(); });
 
         if (BetPlus_Button) BetPlus_Button.onClick.RemoveAllListeners();
-        if (BetPlus_Button) BetPlus_Button.onClick.AddListener(delegate { ChangeBet(true); });
+        if (BetPlus_Button) BetPlus_Button.onClick.AddListener(delegate { OnBetOne(true); });
         if (BetMinus_Button) BetMinus_Button.onClick.RemoveAllListeners();
-        if (BetMinus_Button) BetMinus_Button.onClick.AddListener(delegate { ChangeBet(false); });
+        if (BetMinus_Button) BetMinus_Button.onClick.AddListener(delegate { OnBetOne(false); });
 
         if (LinePlus_Button) LinePlus_Button.onClick.RemoveAllListeners();
         if (LinePlus_Button) LinePlus_Button.onClick.AddListener(delegate { ChangeLine(true); });
@@ -293,53 +295,43 @@ public class SlotBehaviour : MonoBehaviour
 
     }
 
-    private void ChangeBet(bool IncDec)
+    void OnBetOne(bool IncDec)
     {
         if (audioController) audioController.PlayButtonAudio();
 
-        double currentbet = 0;
-        try
+        if (BetCounter < SocketManager.initialData.Bets.Count - 1)
         {
-            currentbet = double.Parse(TotalBet_text.text);
+            BetCounter++;
         }
-        catch (Exception e)
+        else
         {
-            Debug.Log("parse error " + e);
+            BetCounter = 0;
         }
+        Debug.Log("Index:" + BetCounter);
+
+        if (TotalBet_text) TotalBet_text.text = SocketManager.initialData.Bets[BetCounter].ToString();
+        if (BetPerLine_text) BetPerLine_text.text = SocketManager.initialData.Bets[BetCounter].ToString();
+    }
+
+    private void ChangeBet(bool IncDec)
+    {
+        if (audioController) audioController.PlayButtonAudio();
         if (IncDec)
         {
-            if (currentbet < 99999)
+            if (BetCounter < SocketManager.initialData.Bets.Count - 1)
             {
-                currentbet += 100;
-            }
-            else
-            {
-                currentbet = 99999;
-            }
-
-            if (currentbet > 99999)
-            {
-                currentbet = 99999;
+                BetCounter++;
             }
         }
         else
         {
-            if (currentbet > 0)
+            if (BetCounter > 0)
             {
-                currentbet -= 100;
-            }
-            else
-            {
-                currentbet = 0;
-            }
-
-            if (currentbet < 0)
-            {
-                currentbet = 0;
+                BetCounter--;
             }
         }
 
-        if (TotalBet_text) TotalBet_text.text = currentbet.ToString();
+        if (TotalBet_text) TotalBet_text.text = SocketManager.initialData.Bets[BetCounter].ToString();
     }
 
 
@@ -505,23 +497,42 @@ public class SlotBehaviour : MonoBehaviour
     {
         IsSpinning = true;
         ToggleButtonGrp(false);
-
         for (int i = 0; i < numberOfSlots; i++)
         {
             InitializeTweening(Slot_Transform[i]);
             yield return new WaitForSeconds(0.1f);
         }
+
         double bet = 0;
+        double linesCount = 0;
+        double balance = 0;
         try
         {
             bet = double.Parse(TotalBet_text.text);
+            linesCount = double.Parse(Lines_text.text);
         }
         catch (Exception e)
         {
             Debug.Log("Error while conversion " + e.Message);
         }
+
+        try
+        {
+            balance = double.Parse(Balance_text.text);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error while conversion " + e.Message);
+        }
+
+        balance = balance - bet;
+
+        if (Balance_text) Balance_text.text = balance.ToString("f2");
+
         SocketManager.AccumulateResult(bet);
-        yield return new WaitForSeconds(0.5f);
+
+        yield return new WaitUntil(() => SocketManager.isResultdone);
+
 
         for (int j = 0; j < SocketManager.resultData.ResultReel.Count; j++)
         {
@@ -539,8 +550,8 @@ public class SlotBehaviour : MonoBehaviour
         {
             yield return StopTweening(5, Slot_Transform[i], i);
         }
-
-        CheckPayoutLineBackend(SocketManager.resultData.linesToEmit, SocketManager.resultData.FinalsymbolsToEmit);
+        yield return new WaitForSeconds(0.3f);
+        CheckPayoutLineBackend(SocketManager.resultData.linesToEmit, SocketManager.resultData.FinalsymbolsToEmit, SocketManager.resultData.jackpot);
         KillAllTweens();
         if (!IsAutoSpin)
         {
@@ -559,7 +570,7 @@ public class SlotBehaviour : MonoBehaviour
 
     internal void CallCloseSocket()
     {
-        SocketManager.CloseWebSocket();
+        SocketManager.CloseSocket();
     }
 
     void ToggleButtonGrp(bool toggle)
